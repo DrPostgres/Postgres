@@ -13,7 +13,7 @@ if ($ENV{PG_TEST_EXTRA} !~ /\bload_balance\b/)
 }
 
 # This tests loadbalancing based on a DNS entry that contains multiple records
-# for different IPs. Since setting up a DNS server is more effort than we
+# for different IP addresses. Since setting up a DNS server is more effort than we
 # consider reasonable to run this test, this situation is instead imitated by
 # using a hosts file where a single hostname maps to multiple different IP
 # addresses. This test requires the administrator to add the following lines to
