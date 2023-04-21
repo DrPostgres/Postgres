@@ -1458,8 +1458,8 @@ connectOptions2(PGconn *conn)
 			&& strcmp(conn->channel_binding, "require") != 0)
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "invalid %s value: \"%s\"",
-									"channel_binding", conn->channel_binding);
+			libpq_append_conn_error(conn, "invalid channel_binding value: \"%s\"",
+									conn->channel_binding);
 			return false;
 		}
 	}
@@ -1500,8 +1500,8 @@ connectOptions2(PGconn *conn)
 			&& strcmp(conn->sslmode, "verify-full") != 0)
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "invalid %s value: \"%s\"",
-									"sslmode", conn->sslmode);
+			libpq_append_conn_error(conn, "invalid sslmode value: \"%s\"",
+									conn->sslmode);
 			return false;
 		}
 
@@ -1520,8 +1520,8 @@ connectOptions2(PGconn *conn)
 			case 'r':			/* "require" */
 			case 'v':			/* "verify-ca" or "verify-full" */
 				conn->status = CONNECTION_BAD;
-				libpq_append_conn_error(conn, "%s value \"%s\" invalid when SSL support is not compiled in",
-										"sslmode", conn->sslmode);
+				libpq_append_conn_error(conn, "sslmode value \"%s\" invalid when SSL support is not compiled in",
+										conn->sslmode);
 				return false;
 		}
 #endif
@@ -1556,16 +1556,14 @@ connectOptions2(PGconn *conn)
 	if (!sslVerifyProtocolVersion(conn->ssl_min_protocol_version))
 	{
 		conn->status = CONNECTION_BAD;
-		libpq_append_conn_error(conn, "invalid %s value: \"%s\"",
-								"ssl_min_protocol_version",
+		libpq_append_conn_error(conn, "invalid ssl_min_protocol_version value: \"%s\"",
 								conn->ssl_min_protocol_version);
 		return false;
 	}
 	if (!sslVerifyProtocolVersion(conn->ssl_max_protocol_version))
 	{
 		conn->status = CONNECTION_BAD;
-		libpq_append_conn_error(conn, "invalid %s value: \"%s\"",
-								"ssl_max_protocol_version",
+		libpq_append_conn_error(conn, "invalid ssl_max_protocol_version value: \"%s\"",
 								conn->ssl_max_protocol_version);
 		return false;
 	}
@@ -1595,16 +1593,16 @@ connectOptions2(PGconn *conn)
 			strcmp(conn->sslcertmode, "require") != 0)
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "invalid %s value: \"%s\"",
-									"sslcertmode", conn->sslcertmode);
+			libpq_append_conn_error(conn, "invalid sslcertmode value: \"%s\"",
+									conn->sslcertmode);
 			return false;
 		}
 #ifndef USE_SSL
 		if (strcmp(conn->sslcertmode, "require") == 0)
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "%s value \"%s\" invalid when SSL support is not compiled in",
-									"sslcertmode", conn->sslcertmode);
+			libpq_append_conn_error(conn, "sslcertmode value \"%s\" invalid when SSL support is not compiled in",
+									conn->sslcertmode);
 			return false;
 		}
 #endif
@@ -1618,8 +1616,8 @@ connectOptions2(PGconn *conn)
 		if (strcmp(conn->sslcertmode, "require") == 0)
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "%s value \"%s\" is not supported (check OpenSSL version)",
-									"sslcertmode", conn->sslcertmode);
+			libpq_append_conn_error(conn, "sslcertmode value \"%s\" is not supported (check OpenSSL version)",
+									conn->sslcertmode);
 			return false;
 		}
 #endif
@@ -1641,7 +1639,7 @@ connectOptions2(PGconn *conn)
 			strcmp(conn->gssencmode, "require") != 0)
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "invalid %s value: \"%s\"", "gssencmode", conn->gssencmode);
+			libpq_append_conn_error(conn, "invalid gssencmode value: \"%s\"", conn->gssencmode);
 			return false;
 		}
 #ifndef ENABLE_GSS
@@ -1681,8 +1679,7 @@ connectOptions2(PGconn *conn)
 		else
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "invalid %s value: \"%s\"",
-									"target_session_attrs",
+			libpq_append_conn_error(conn, "invalid target_session_attrs value: \"%s\"",
 									conn->target_session_attrs);
 			return false;
 		}
@@ -1702,8 +1699,7 @@ connectOptions2(PGconn *conn)
 		else
 		{
 			conn->status = CONNECTION_BAD;
-			libpq_append_conn_error(conn, "invalid %s value: \"%s\"",
-									"load_balance_hosts",
+			libpq_append_conn_error(conn, "invalid load_balance_hosts value: \"%s\"",
 									conn->load_balance_hosts);
 			return false;
 		}
