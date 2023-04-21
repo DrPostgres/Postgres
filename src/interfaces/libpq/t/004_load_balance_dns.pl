@@ -9,7 +9,7 @@ use Test::More;
 if ($ENV{PG_TEST_EXTRA} !~ /\bload_balance\b/)
 {
 	plan skip_all =>
-	  'Potentially unsafe test load_balance not enabled in PG_TEST_EXTRA';
+	  'Potentially unsafe test; load_balance not enabled in PG_TEST_EXTRA';
 }
 
 # This tests loadbalancing based on a DNS entry that contains multiple records
