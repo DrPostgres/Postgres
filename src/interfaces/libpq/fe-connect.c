@@ -1037,7 +1037,7 @@ parse_comma_separated_list(char **startptr, bool *more)
  * Initializes the prng_state field of the connection. We want something
  * unpredictable, so if possible, use high-quality random bits for the
  * seed. Otherwise, fall back to a seed based on the connection address,
- * timestamp and PID.
+ * timestamp, and PID.
  */
 static void
 libpq_prng_init(PGconn *conn)
