@@ -2160,7 +2160,7 @@ postgresql://%2Fvar%2Flib%2Fpostgresql/dbname
         hosts and addresses. Once a connection attempt is successful no other
         hosts and addresses will be tried. This parameter is typically used in
         combination with multiple host names or a DNS record that returns
-        multiple IPs. This parameter can be used in combination with
+        multiple IP addresses. This parameter can be used in combination with
         <xref linkend="libpq-connect-target-session-attrs"/>
         to, for example, load balance over standby servers only. Once successfully
         connected, subsequent queries on the returned connection will all be
