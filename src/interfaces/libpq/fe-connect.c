@@ -1059,6 +1059,31 @@ libpq_prng_init(PGconn *conn)
 }
 
 /*
+ * Shuffles the addresses of the connection.
+ */
+static void
+shuffleAddresses(PGconn *conn)
+{
+	/*
+	 * This is the "inside-out" variant of the Fisher-Yates shuffle
+	 * algorithm. Notionally, we append each new value to the array
+	 * and then swap it with a randomly-chosen array element (possibly
+	 * including itself, else we fail to generate permutations with
+	 * the last integer last).  The swap step can be optimized by
+	 * combining it with the insertion.
+	 */
+	for (int i = 1; i < conn->naddr; i++)
+	{
+		AddrInfo	temp;
+		int			j = pg_prng_uint64_range(&conn->prng_state, 0, i);
+
+		temp		  = conn->addr[j];
+		conn->addr[j] = conn->addr[i];
+		conn->addr[i] = temp;
+	}
+}
+
+/*
  *		connectOptions2
  *
  * Compute derived connection options after absorbing all user-supplied info.
@@ -1711,26 +1736,14 @@ connectOptions2(PGconn *conn)
 	else
 		conn->load_balance_type = LOAD_BALANCE_DISABLE;
 
+	/*
+	 * If random load balancing is enabled we shuffle the addresses.
+	 */
 	if (conn->load_balance_type == LOAD_BALANCE_RANDOM)
 	{
 		libpq_prng_init(conn);
 
-		/*
-		 * This is the "inside-out" variant of the Fisher-Yates shuffle
-		 * algorithm. Notionally, we append each new value to the array and
-		 * then swap it with a randomly-chosen array element (possibly
-		 * including itself, else we fail to generate permutations with the
-		 * last integer last).  The swap step can be optimized by combining it
-		 * with the insertion.
-		 */
-		for (i = 1; i < conn->nconnhost; i++)
-		{
-			int			j = pg_prng_uint64_range(&conn->prng_state, 0, i);
-			pg_conn_host temp = conn->connhost[j];
-
-			conn->connhost[j] = conn->connhost[i];
-			conn->connhost[i] = temp;
-		}
+		shuffleAddresses(conn);
 	}
 
 	/*
@@ -2746,24 +2759,11 @@ keep_going:						/* We will come back to here until there is
 		if (conn->load_balance_type == LOAD_BALANCE_RANDOM)
 		{
 			/*
-			 * This is the "inside-out" variant of the Fisher-Yates shuffle
-			 * algorithm. Notionally, we append each new value to the array
-			 * and then swap it with a randomly-chosen array element (possibly
-			 * including itself, else we fail to generate permutations with
-			 * the last integer last).  The swap step can be optimized by
-			 * combining it with the insertion.
-			 *
 			 * We don't need to initialize conn->prng_state here, because that
 			 * already happened in connectOptions2.
 			 */
-			for (int i = 1; i < conn->naddr; i++)
-			{
-				int			j = pg_prng_uint64_range(&conn->prng_state, 0, i);
-				AddrInfo	temp = conn->addr[j];
 
-				conn->addr[j] = conn->addr[i];
-				conn->addr[i] = temp;
-			}
+			shuffleAddresses(conn);
 		}
 
 		reset_connection_state_machine = true;
